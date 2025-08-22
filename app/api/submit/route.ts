@@ -48,15 +48,25 @@ export async function POST(req: NextRequest) {
 
     const text = [
       "<b>Yangi reklama kadr arizasi</b>",
+      ` `,
       `👤 <b>Ism Familiya:</b> ${escapeHTML(data.fullName)}`,
+      ` `,
       `📞 <b>Telefon:</b> ${escapeHTML(data.phone)}`,
+      ` `,
       `🎂 <b>Yosh:</b> ${data.age}`,
+      ` `,
       `💼 <b>Ish staji:</b> ${data.experienceYears} yil`,
+      ` `,
       `📍 <b>Manzil:</b> ${escapeHTML(data.address)}`,
+      ` `,
       `📷 <b>Kamera:</b> ${escapeHTML(data.camera ?? "-")}`,
+      ` `,
       `💻 <b>Montaj noutbuk:</b> ${escapeHTML(data.laptop ?? "-")}`,
+      ` `,
       `🛠️ <b>Biladigan dasturlar:</b>\n${escapeHTML(data.skills)}`,
+      ` `,
       `🌟 <b>Afzalliklar:</b>\n${escapeHTML(data.advantages)}`,
+      ` `,
     ].join("\n");
 
     const payload: Record<string, unknown> = {
