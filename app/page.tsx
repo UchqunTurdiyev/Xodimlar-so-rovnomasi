@@ -1,103 +1,264 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useState, type ReactNode } from "react";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormSchema, type FormFields, type FormValues } from "./lib/schema";
+import { useRouter } from "next/navigation";
+
+
+export default function Page() {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormFields>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: { camera: "", laptop: "" },
+  });
+
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] =
+    useState<null | { ok: boolean; msg: string }>(null);
+
+  const onSubmit: SubmitHandler<FormFields> = async (raw) => {
+    try {
+      setLoading(true);
+      setStatus(null);
+
+      // RHF xom qiymatlarini Zod orqali yakuniy tiplarga o‘tkazamiz
+      const data: FormValues = FormSchema.parse(raw);
+
+      const res = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        reset({ camera: "", laptop: "" });
+        setStatus({ ok: true, msg: "Ariza muvaffaqiyatli yuborildi!" });
+
+  router.push("/success"); // ✅ shu sahifaga yo'naltiramiz
+
+      } else {
+        const j = await res.json().catch(() => ({}));
+        setStatus({ ok: false, msg: j?.error ?? "Yuborishda xatolik" });
+      }
+    } catch {
+      setStatus({ ok: false, msg: "Tarmoq xatosi" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
+    <main className="relative">
+      {/* HERO with background image */}
+      <section className="relative isolate min-h-[70vh] grid place-items-center overflow-hidden py-14">
+        {/* Background image */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-20 bg-[url('/v.jpg')] bg-cover bg-center py-10"
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+        {/* Dark gradient overlay */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-black/40 via-black/30 to-white/0"
+        />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+        <div className="w-full px-4">
+          <div className="mx-auto max-w-4xl">
+            <div className="text-center text-white drop-shadow">
+              <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
+                Marketing jamoasi uchun videograf tanlovi
+              </h1>
+              <p className="mt-3 text-white/90">
+                Quyidagi <span className="font-medium">anketani</span> to‘ldiring.
+                Ma’lumotlaringiz <span className="font-medium">bevosita Telegram</span> ga yuboriladi.
+              </p>
+            </div>
+
+            {/* Glass card form */}
+            <div className="mt-8">
+              <div className="rounded-2xl border border-white/30 bg-white/65 backdrop-blur-md shadow-xl">
+                <div className="p-6 md:p-8">
+                  <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Field label="Ism familya" error={errors.fullName?.message}>
+                        <input
+                          type="text"
+                          {...register("fullName")}
+                          placeholder="Masalan: Ali Valiyev"
+                          className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                        />
+                      </Field>
+
+                      <Field label="Telefon raqam" error={errors.phone?.message}>
+                        <input
+                          type="tel"
+                          {...register("phone")}
+                          placeholder="Masalan: +998 90 123 45 67"
+                          className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                        />
+                      </Field>
+
+                      <Field label="Yoshi" error={errors.age?.message}>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          {...register("age")}
+                          placeholder="Masalan: 22"
+                          className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                        />
+                      </Field>
+
+                      <Field
+                        label="Ish staji (necha yil)"
+                        error={errors.experienceYears?.message}
+                      >
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          {...register("experienceYears")}
+                          placeholder="Masalan: 2"
+                          className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                        />
+                      </Field>
+                    </div>
+
+                    <Field label="Manzil" error={errors.address?.message}>
+                      <input
+                        type="text"
+                        {...register("address")}
+                        placeholder="Masalan: Samarqand, Registon ko‘chasi"
+                        className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                      />
+                    </Field>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <Field
+                        label="Kamera (kompaniya/model)"
+                        hint="Masalan: Sony A7III, Canon R6, iPhone 15 Pro va h.k."
+                      >
+                        <input
+                          type="text"
+                          {...register("camera")}
+                          placeholder="Masalan: Sony A7III"
+                          className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                        />
+                      </Field>
+
+                      <Field
+                        label="Montaj uchun noutbuk"
+                        hint="Masalan: MacBook Pro M2, i7 + 16GB RAM va h.k."
+                      >
+                        <input
+                          type="text"
+                          {...register("laptop")}
+                          placeholder="Masalan: MacBook Pro M2"
+                          className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                        />
+                      </Field>
+                    </div>
+
+                    <Field
+                      label="Nimalarni bilasiz (dasturlar)"
+                      error={errors.skills?.message}
+                      hint="Masalan: Adobe Premiere Pro, After Effects, Photoshop, DaVinci"
+                    >
+                      <textarea
+                        rows={4}
+                        {...register("skills")}
+                        placeholder="Adobe Premiere Pro, Photoshop va yana..."
+                        className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                      />
+                    </Field>
+
+                    <Field
+                      label="Afzalliklaringiz"
+                      error={errors.advantages?.message}
+                      hint="Sizni boshqalardan ajratib turadigan jihatlar"
+                    >
+                      <textarea
+                        rows={4}
+                        {...register("advantages")}
+                        placeholder="Masalan: tezkor montaj, kuchli storytelling, koloristika tajribasi..."
+                        className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
+                      />
+                    </Field>
+
+                    {status && (
+                      <p
+                        className={
+                          "text-sm " + (status.ok ? "text-emerald-700" : "text-red-600")
+                        }
+                      >
+                        {status.msg}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="group inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-6 py-3 font-medium text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/30 disabled:opacity-70"
+                    >
+                      {loading ? (
+                        <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                      ) : (
+                        <>
+                          <span>Arizani yuborish</span>
+                          <svg
+                            className="size-5 transition-transform group-hover:translate-x-0.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-10 text-center text-xs text-slate-500">
+        © {new Date().getFullYear()} Reklama kadr anketasi
       </footer>
+    </main>
+  );
+}
+
+function Field({
+  label,
+  error,
+  hint,
+  children,
+}: {
+  label: string;
+  error?: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <label className="block text-sm font-medium text-slate-800">{label}</label>
+      {children}
+      {hint && <p className="text-xs text-slate-500">{hint}</p>}
+      {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
   );
 }
