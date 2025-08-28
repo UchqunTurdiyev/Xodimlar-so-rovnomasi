@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const threadId = thread && /^\d+$/.test(thread) ? Number(thread) : undefined;
 
     const text = [
-      "<b>Yangi reklama kadr arizasi</b>",
+      "<b>Xodim</b>",
       ` `,
       `👤 <b>Ism Familiya:</b> ${escapeHTML(data.fullName)}`,
       ` `,
