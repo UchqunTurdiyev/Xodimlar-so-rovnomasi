@@ -141,8 +141,8 @@ export default function Page() {
 
                     <div className="grid md:grid-cols-2 gap-4">
                       <Field
-                        label="Kamera (kompaniya/model)"
-                        hint="Masalan: Sony A7III, Canon R6, iPhone 15 Pro va h.k."
+                        label="Syomka uchun qo'shimcha uskunalariz bormi?"
+                        hint="Masalan: Sony, iPhone 15 Pro Max, sof box, chiroq va h.k."
                       >
                         <input
                           type="text"
