@@ -74,7 +74,7 @@ export default function Page() {
           <div className="mx-auto max-w-4xl">
             <div className="text-center text-white drop-shadow">
               <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
-                Marketing jamoasi uchun mabilograf tanlovi
+                Marketing jamoasi uchun Mobilograf ishga olamiz
               </h1>
               <p className="mt-3 text-white/90">
                 Quyidagi <span className="font-medium">anketani</span> to‘ldiring.
