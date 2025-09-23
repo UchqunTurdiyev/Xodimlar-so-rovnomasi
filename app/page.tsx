@@ -147,7 +147,7 @@ export default function Page() {
                         <input
                           type="text"
                           {...register("camera")}
-                          placeholder="Masalan: Sony, Kenon"
+                          placeholder="Masalan: Sony, Kanon"
                           className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
                         />
                       </Field>
