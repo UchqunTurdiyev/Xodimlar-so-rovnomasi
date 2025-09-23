@@ -74,7 +74,7 @@ export default function Page() {
           <div className="mx-auto max-w-4xl">
             <div className="text-center text-white drop-shadow">
               <h1 className="text-3xl md:text-5xl font-bold tracking-tight">
-                Marketing jamoasi uchun Mobilograf ishga olamiz
+                Marketing jamoasi uchun Videograf ishga olamiz
               </h1>
               <p className="mt-3 text-white/90">
                 Quyidagi <span className="font-medium">anketani</span> to‘ldiring.
@@ -147,7 +147,7 @@ export default function Page() {
                         <input
                           type="text"
                           {...register("camera")}
-                          placeholder="Masalan: Iphone 16  promax"
+                          placeholder="Masalan: Sony, Kenon"
                           className="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm outline-none ring-0 transition focus:border-slate-400 focus:ring-4 focus:ring-slate-900/10 placeholder:text-slate-400"
                         />
                       </Field>
