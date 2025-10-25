@@ -57,7 +57,7 @@ export default function SuccessPage() {
                 href="https://www.instagram.com/kadrlarhr/"
                 className="inline-flex items-center justify-center rounded-2xl border border-slate-300/80 bg-white px-6 py-3 font-medium text-slate-900 shadow-sm transition hover:border-slate-400 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/10"
               >
-                Instagram sahifasiga o'tish
+                Instagram sahifasiga o&apos;tish
               </Link>
             </div>
           </div>
