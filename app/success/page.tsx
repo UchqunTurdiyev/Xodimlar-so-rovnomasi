@@ -51,13 +51,13 @@ export default function SuccessPage() {
                 href="/"
                 className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-6 py-3 font-medium text-white shadow-lg shadow-slate-900/20 transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/30"
               >
-                Bosh sahifa
+                Bosh sahifaga qaytish
               </Link>
               <Link
-                href="/"
+                href="https://www.instagram.com/kadrlarhr/"
                 className="inline-flex items-center justify-center rounded-2xl border border-slate-300/80 bg-white px-6 py-3 font-medium text-slate-900 shadow-sm transition hover:border-slate-400 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-900/10"
               >
-                Yangi ariza yuborish
+                Instagram sahigasiga o'tish
               </Link>
             </div>
           </div>
